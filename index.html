@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>فواتير محلات أيمن أبو الشوارب - بسيط</title>
+  <style>
+    :root{--ink:#1f2937;--muted:#6b7280;--brand:#0d6efd;--bg:#fafafa}
+    html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Naskh Arabic","Noto Kufi Arabic",Tahoma,Arial,sans-serif}
+    .wrap{max-width:900px;margin:24px auto;padding:16px}
+    .card{background:#fff;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.06);padding:20px}
+    h1{font-size:20px;margin:0 0 10px}
+    .muted{color:var(--muted);font-size:12px;margin-bottom:16px}
+    table{width:100%;border-collapse:collapse}
+    th,td{border:1px solid #e5e7eb;padding:10px}
+    thead th{background:#f8fafc;text-align:center}
+    tbody td{vertical-align:middle}
+    input{width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:8px;font-size:14px;box-sizing:border-box}
+    .num{text-align:center}
+    tfoot td{font-weight:800}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    button{padding:10px 14px;border-radius:999px;border:1px solid #d1d5db;background:#fff;cursor:pointer}
+    button.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .del{background:#fff;border-color:#ef4444;color:#ef4444;padding:6px 10px;border-radius:8px}
+    .total-box{display:flex;justify-content:flex-end;gap:8px;align-items:center;margin-top:12px;font-weight:800}
+    @media print{
+      .no-print{display:none!important}
+      body{background:#fff}
+      .card{box-shadow:none}
+      input{border:0}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>فواتير محلات أيمن أبو الشوارب</h1>
+      <div class="muted">نموذج بسيط لكتابة المنتجات، الحساب التلقائي، والطباعة</div>
+
+      <div class="actions no-print">
+        <button id="add" class="primary">➕ إضافة سطر</button>
+        <button id="print">🖨️ طباعة</button>
+      </div>
+
+      <div style="overflow-x:auto;margin-top:10px">
+        <table id="tbl">
+          <thead>
+            <tr>
+              <th style="width:40px">#</th>
+              <th>اسم المنتج</th>
+              <th style="width:120px">الكمية</th>
+              <th style="width:140px">السعر/حبة</th>
+              <th style="width:140px">المجموع</th>
+              <th class="no-print" style="width:80px">إجراء</th>
+            </tr>
+          </thead>
+          <tbody id="body"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4" style="text-align:end">الإجمالي الكلي</td>
+              <td id="grand" class="num">0.00</td>
+              <td class="no-print"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const bodyEl = document.getElementById('body');
+    const grandEl = document.getElementById('grand');
+    const addBtn = document.getElementById('add');
+    const printBtn = document.getElementById('print');
+
+    function fmt(n){return (n||0).toFixed(2)}
+    function num(v){const n=parseFloat((v||'').toString().replace(/[^0-9.\-]/g,''));return isNaN(n)?0:n}
+
+    function row(index){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="num">${index}</td>
+        <td><input class="name" placeholder="اسم المنتج"></td>
+        <td><input class="qty num" type="number" min="0" step="1" value="1"></td>
+        <td><input class="price num" type="number" min="0" step="0.01" value="0.00"></td>
+        <td class="num total">0.00</td>
+        <td class="no-print" style="text-align:center"><button class="del">حذف</button></td>
+      `;
+      return tr;
+    }
+
+    function renumber(){
+      [...bodyEl.querySelectorAll('tr')].forEach((tr,i)=> tr.children[0].textContent=i+1);
+    }
+
+    function calc(){
+      let g=0;
+      bodyEl.querySelectorAll('tr').forEach(tr=>{
+        const q=num(tr.querySelector('.qty').value);
+        const p=num(tr.querySelector('.price').value);
+        const t=q*p;
+        tr.querySelector('.total').textContent=fmt(t);
+        g+=t;
+      });
+      grandEl.textContent=fmt(g);
+    }
+
+    function bind(tr){
+      tr.querySelector('.qty').addEventListener('input', calc);
+      tr.querySelector('.price').addEventListener('input', calc);
+      tr.querySelector('.del').addEventListener('click', ()=>{
+        tr.remove(); renumber(); calc();
+      });
+    }
+
+    function addRow(focus=true){
+      const tr=row(bodyEl.children.length+1);
+      bodyEl.appendChild(tr);
+      bind(tr);
+      calc();
+      if(focus) tr.querySelector('.name').focus();
+    }
+
+    addBtn.onclick=()=>addRow();
+    printBtn.onclick=()=>window.print();
+
+    // init
+    addRow(false);
+  </script>
+</body>
+</html>
