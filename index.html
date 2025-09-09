@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>فواتير محلات أيمن أبو الشوارب</title>
+  <style>
+    body {
+      font-family: "Tahoma","Arial","Noto Naskh Arabic",sans-serif;
+      margin:20px; direction:rtl;
+    }
+    h1 {text-align:center;}
+    table {width:100%; border-collapse:collapse; margin-top:20px; table-layout:auto;}
+    th,td {
+      border:1px solid #333;
+      padding:8px;
+      text-align:center;
+      vertical-align:middle;
+    }
+    /* العمود الخاص باسم المنتج */
+    th.name-cell, td.name-cell {
+      text-align:right;
+      white-space:normal;
+      word-break:break-word;
+      width:40%;
+    }
+    input {
+      width:100%;
+      border:none;
+      text-align:center;
+    }
+    td.name-cell input {
+      text-align:right;
+    }
+    tfoot td {font-weight:bold;}
+    @media print {
+      .no-print {display:none;}
+      input {border:none;}
+    }
+  </style>
+</head>
+<body>
+  <h1>فواتير محلات أيمن أبو الشوارب</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:40px">#</th>
+        <th class="name-cell">اسم المنتج</th>
+        <th style="width:120px">الكمية</th>
+        <th style="width:140px">السعر/حبة</th>
+        <th style="width:140px">المجموع</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td class="name-cell"><input></td>
+        <td><input type="number"></td>
+        <td><input type="number" step="0.01"></td>
+        <td><input></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td class="name-cell"><input></td>
+        <td><input type="number"></td>
+        <td><input type="number" step="0.01"></td>
+        <td><input></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td class="name-cell"><input></td>
+        <td><input type="number"></td>
+        <td><input type="number" step="0.01"></td>
+        <td><input></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td class="name-cell"><input></td>
+        <td><input type="number"></td>
+        <td><input type="number" step="0.01"></td>
+        <td><input></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td class="name-cell"><input></td>
+        <td><input type="number"></td>
+        <td><input type="number" step="0.01"></td>
+        <td><input></td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4">الإجمالي</td>
+        <td><input></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <button class="no-print" onclick="window.print()">🖨️ طباعة</button>
+</body>
+</html>
