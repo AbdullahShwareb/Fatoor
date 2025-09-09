@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>فواتير محلات أيمن أبو الشوارب</title>
+  <style>
+    body {
+      font-family: "Tahoma","Arial","Noto Naskh Arabic",sans-serif;
+      margin:20px; direction:rtl; background:#f5f7fb;
+    }
+    h1 {text-align:center; margin-bottom:15px;}
+    table {width:100%; border-collapse:collapse; margin-top:20px;}
+    th,td {
+      border:1px solid #ddd;
+      padding:8px;
+      text-align:center;
+      vertical-align:middle;
+    }
+    thead th {
+      background:#e7efff;
+      font-weight:bold;
+    }
+    tbody tr:nth-child(odd){background:#f9f9f9;}
+    tfoot td {font-weight:bold; background:#eef4ff;}
+    input {
+      width:100%;
+      border:none;
+      padding:6px;
+      text-align:center;
+      background:transparent;
+    }
+    td.name-cell input {
+      text-align:right;
+      white-space:normal;
+      word-break:break-word;
+    }
+    .total-input {background:#f3f4f6;}
+    .actions {
+      margin:15px 0;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+    }
+    button {
+      padding:8px 14px;
+      border-radius:6px;
+      border:1px solid #0d6efd;
+      background:#0d6efd;
+      color:#fff;
+      cursor:pointer;
+    }
+    button.outline {
+      background:#fff;
+      color:#0d6efd;
+    }
+    @media print {
+      .no-print{display:none;}
+      input{border:none;}
+      body{background:#fff;}
+    }
+  </style>
+</head>
+<body>
+  <h1>فواتير محلات أيمن أبو الشوارب</h1>
+
+  <div class="actions no-print">
+    <button id="add">➕ إضافة سطر</button>
+    <button class="outline" onclick="window.print()">🖨️ طباعة</button>
+  </div>
+
+  <table id="tbl">
+    <thead>
+      <tr>
+        <th style="width:40px">#</th>
+        <th class="name-cell">اسم المنتج</th>
+        <th style="width:120px">الكمية</th>
+        <th style="width:140px">السعر/حبة</th>
+        <th style="width:140px">المجموع</th>
+      </tr>
+    </thead>
+    <tbody id="body">
+      <!-- الصفوف تضاف هنا -->
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4">الإجمالي الكلي</td>
+        <td><input id="grand" class="total-input" readonly value="0.00"></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <script>
+    const bodyEl = document.getElementById('body');
+    const grandEl = document.getElementById('grand');
+    const addBtn = document.getElementById('add');
+
+    function fmt(n){return (n||0).toFixed(2);}
+    function num(v){const n=parseFloat(v);return isNaN(n)?0:n;}
+
+    function calc(){
+      let g=0;
+      bodyEl.querySelectorAll('tr').forEach(tr=>{
+        const q=num(tr.querySelector('.qty').value);
+        const p=num(tr.querySelector('.price').value);
+        const total=q*p;
+        tr.querySelector('.total').value=fmt(total);
+        g+=total;
+      });
+      grandEl.value=fmt(g);
+    }
+
+    function addRow(){
+      const i = bodyEl.querySelectorAll('tr').length+1;
+      const tr=document.createElement('tr');
+      tr.innerHTML=`
+        <td>${i}</td>
+        <td class="name-cell"><input class="name"></td>
+        <td><input type="number" class="qty" value="1"></td>
+        <td><input type="number" step="0.01" class="price" value="0.00"></td>
+        <td><input class="total total-input" readonly value="0.00"></td>
+      `;
+      bodyEl.appendChild(tr);
+      tr.querySelector('.qty').addEventListener('input', calc);
+      tr.querySelector('.price').addEventListener('input', calc);
+      calc();
+    }
+
+    addBtn.addEventListener('click', addRow);
+
+    // ابدأ بصفين جاهزين
+    addRow(); addRow();
+  </script>
+</body>
+</html>
